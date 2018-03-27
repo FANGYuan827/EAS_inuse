@@ -1,0 +1,117 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="C:\Users\Administrator\Desktop\Beta_EAS\MyPrj_EAS_20180322_80FreqPoints_RAM\project\"
+ProjectType=Executable
+CPUFamily=TMS320C28XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\dsp\FPU\v130\lib\C28x_FPU_Lib.lib"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\abs_SP_CV_2.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\CFFT_f32.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\CFFT_f32_mag.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\CFFT_f32_phase.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\maxidx_SP_RV_2.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\RFFT_f32.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\RFFT_f32_mag.asm"
+Source="..\dsp\FPU\v130\source\C28x_FPU_LIB\RFFT_f32_phase.asm"
+Source="..\include\DSP2833x_Project.h"
+Source="..\include\fft.h"
+Source="..\include\FPU.h"
+Source="..\include\IQmathLib.h"
+Source="..\include\SFO.h"
+Source="..\include\SFO_V5.h"
+Source="..\readme.txt"
+Source="..\source\delay.c"
+Source="..\source\DSP2833x_Adc.c"
+Source="..\source\DSP2833x_ADC_cal.asm"
+Source="..\source\DSP2833x_CodeStartBranch.asm"
+Source="..\source\DSP2833x_CpuTimers.c"
+Source="..\source\DSP2833x_DMA.c"
+Source="..\source\DSP2833x_GlobalVariableDefs.c"
+Source="..\source\DSP2833x_Gpio.c"
+Source="..\source\DSP2833x_Mcbsp.c"
+Source="..\source\DSP2833x_MemCopy.c"
+Source="..\source\DSP2833x_PieCtrl.c"
+Source="..\source\DSP2833x_PieVect.c"
+Source="..\source\DSP2833x_SWPrioritizedDefaultIsr.c"
+Source="..\source\DSP2833x_SysCtrl.c"
+Source="..\source\DSP2833x_usDelay.asm"
+Source="..\source\DSP2833x_Xintf.c"
+Source="..\source\Example_2833xAIC23_IIC_Mcbsp.c"
+Source="..\source\My_Config.c"
+Source="..\cmd\28335_RAM_lnk.cmd"
+Source="..\cmd\DSP28335_Headers_nonBIOS.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-g -pdr -pdsw225 -fr"$(Proj_dir)\Debug" -i"..\include" -d"_DEBUG" -d"LARGE_MODEL" -ml -mt -v28 --float_support=fpu32
+
+["Compiler" Settings: "Release"]
+Options=-pdsw225 -o3 -fr"$(Proj_dir)\Release" -d"LARGE_MODEL" -ml -v28
+
+["Linker" Settings: "Debug"]
+Options=-c -m".\Debug\FirstPjt.map" -o".\Debug\FirstPjt.out" -stack0x400 -w -x -i"..\lib" -l"rts2800_fpu32.lib"
+
+["Linker" Settings: "Release"]
+Options=-c -m".\Release\FirstPjt.map" -o".\Release\FirstPjt.out" -w -x
+
+["..\include\DSP2833x_Project.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\DSP2833x_Project.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\include\fft.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\fft.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\include\FPU.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\FPU.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\include\IQmathLib.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\IQmathLib.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\include\SFO.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\SFO.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\include\SFO_V5.h" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\include\SFO_V5.h" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\readme.txt" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["..\readme.txt" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\cmd\28335_RAM_lnk.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["..\cmd\28335_RAM_lnk.cmd" Settings: "Release"]
+LinkOrder=1
+
+["..\cmd\DSP28335_Headers_nonBIOS.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["..\cmd\DSP28335_Headers_nonBIOS.cmd" Settings: "Release"]
+LinkOrder=1
+

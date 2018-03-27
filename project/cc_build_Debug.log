@@ -1,0 +1,9 @@
+----------------------------  FirstPjt.pjt - Debug  ----------------------------
+[DSP2833x_SWPrioritizedDefaultIsr.c] "D:\Program Files (x86)\C2000\cgtools\bin\cl2000" -g -pdr -pdsw225 -fr"C:/Users/FY/Desktop/EAS_Program/MyPrj_EAS_20180322_80FreqPoints_RAM/project/Debug" -i"../include" -d"_DEBUG" -d"LARGE_MODEL" -ml -mt -v28 --float_support=fpu32 -@"../project/Debug.lkf" "DSP2833x_SWPrioritizedDefaultIsr.c"
+"DSP2833x_SWPrioritizedDefaultIsr.c", line 211: warning: variable "N_value" was set but never used
+
+[Linking...] "D:\Program Files (x86)\C2000\cgtools\bin\cl2000" -@"Debug.lkf"
+<Linking>
+
+Build Complete,
+  0 Errors, 1 Warnings, 0 Remarks.
