@@ -115,10 +115,10 @@ interrupt void  XINT2_ISR(void)     //外部中断
 	EINT;
 
   	// Insert ISR Code here.......
-	AdcRegs.ADCTRL2.bit.EXT_SOC_SEQ1=1;    //
-	AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;    //2017.07.13 comment：写1立即复位到CONV00的状态
-	AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x1;
-    StartDMACH1();		
+	AdcRegs.ADCTRL2.bit.EXT_SOC_SEQ1=1;    		
+	AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;    		//2017.07.13 comment：写1立即复位到CONV00的状态
+	AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x1;   	//打开ADC中断
+	StartDMACH1();		
 //	 Acknowledge this interrupt to get more from group 1
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
   	
@@ -235,7 +235,7 @@ interrupt void DINTCH1_ISR(void)     // DMA
     
    AdcRegs.ADCST.bit.INT_SEQ1_CLR = 0x1; //清除ADC序列转换标志
   // Clear input buffers:
-	 for(i=0; i < (CFFT_SIZE*2)-1; i=i+2)      // CFFT_SIZE ==64
+	 for(i=0; i < (CFFT_SIZE*2)-1; i=i+2)      //
 		{
 			CFFTin1Buff[i] = 0.0f;
 			CFFTin1Buff[i+1] = 0.0f;
@@ -268,111 +268,39 @@ interrupt void DINTCH1_ISR(void)     // DMA
   	    CFFT_f32_sincostable(&cfft);            // Calculate twiddle factor
 	    CFFT_f32(&cfft);						// Calculate FFT
 	    CFFT_f32_mag(&cfft);					// Calculate magnitude, result stored in CurrentOutPtr
+        
 
-		/*
-		for(i=0;i<CFFT_SIZE;i++)
+		N_value = FindMax(CFFTin1Buff,CFFT_SIZE);    //找出FFT之后的最大值
+		
+		//AGC_Adjust(FFT_Array[freq_num]);    	 //动态调整ADC阈值门限
+		if(N_value>5)
 		{
-			CFFT_mag[i] = CFFToutBuff[i];
-		}
-		*/
-			  ///*	//开机预存储，无标签信号用作比对
-			   
-			   /*
-			    ADC_END=1;    
-				if(ADC_END&&loop) //loop只zuo1ci //2017.07.14 comment:表示只做一次环境噪声收集
-				{
-					for(j=0;j<BUF_SIZE;j++)
-					{
-						init_data[j]=ADC_Result[j];
-					}
-					loop=0;
-					for(j=0;j<CFFT_SIZE;j++)
-					     mag_first[j]= CFFTin1Buff[j]; 			//64个单通道采样点对应fft_mag在CFFTin1buff中
-					for(i=1;i<DATA_SIZE;i++) 
-						fft_ref+=mag_first[i] ;
-					ADC_END=0;
-				}
-				else 
-				{
-				   for(j=0;j<BUF_SIZE;j++)
-				   	  v_time+=pow(ADC_Result[j]-2.0,2);
-				}
-				if(v_time>2.0)
-					alarm_flag++;
-			  */
-			/*
-			for(i=0;i<DATA_SIZE;i++)
-				mag_last[i]=CFFTin1Buff[i];
-			*/
-
 			for(i=2;i<6;i++)
-				fft_sum+=CFFTin1Buff[i];               //求完CFFT之后 取前四个点的幅度值作为判断依据 除掉第一个点 是直流分量
-		    FFT_Array[freq_num] = fft_sum;
-			//AGC_Adjust(FFT_Array[freq_num]);    	 //动态调整ADC阈值门限
-			
+				fft_sum+=CFFTin1Buff[i];               //求完CFFT之后 取前四个点的幅度值作为判断依据 除掉第一个点 是直流分量   这种方法是错误的
+	   		FFT_Array[freq_num] = fft_sum;
+		
+		
 			if(FFT_Array[freq_num]>28.5)
 			{
-			    if(freq_num>=1&&freq_num<=78&&FFT_Array[freq_num-1]>20&&FFT_Array[freq_num+1]>20)   //
+		    	if(freq_num>=1&&freq_num<=78&&FFT_Array[freq_num-1]>20&&FFT_Array[freq_num+1]>20)   //
 				{
 					alarm_flag++;
 				}
 			}
-			
-			//AGC_Adjust(FFT_Array[freq_num]);     //动态调整ADC阈值门限
-
-		    fft_sum=0;  
-		    //vm=0;
+	   	 	fft_sum=0;  
+	    	//vm=0;
 			N_value=mag_last[0];
-        	//correl_freq[sample_count1][freq_num]=N_value;   	 //取出FFT之后的直流分量
-			 
-			 //1
-			 
-			 /*
-				if(freq_num==79)     		//所有频点都发射结束  
-				{       
-				     
-		            min[q]=correl_freq[Antenna_Num][0];               		 //一轮只能找出一组的最小值
-				    for(i=1;i<freq_num+1;i++)              					//找出correl_freq[][]的最小值
-				    	if(correl_freq[Antenna_Num][i]<min[q]) 
-				   	 	{
-				    		min[q]=correl_freq[Antenna_Num][i];
-				    		mark[q]=i;
-				    	}
-					if(min[q]<155)         		//找出所有频点下CFFT的直流分量的最小值
-						q++;
-					else 
-					{
-					    Antenna_Num++;
-					    if(Antenna_Num>1)
-					    	Antenna_Num=0;
-					}
-					if(q==2)
-					{
-					    if(fabs(mark[0]-mark[1])<2)     //如果是相邻的两个频点直流分量 就锁频
-					    {
-							//mode=1;
-						    //alarm_flag++;
-							freq_mark=mark[q-1];
-		                    hold=START_FREQ-freq_mark*0x0002;
-		                    mcbspb_xmit(hold,0);
-						}
-					    q=0;
-					}
-			        	
-	                 //  	max=0;
-					//	mark=0;
-				}  //end if(freq_num==79)
-		  	 //1
-			 */
+		}
 
-    GpioDataRegs.GPBTOGGLE.bit.GPIO41 = 1;              //拉高 
-    PieCtrlRegs.PIEACK.all = PIEACK_GROUP7;	
+		//correl_freq[sample_count1][freq_num]=N_value;   	 //取出FFT之后的直流分量 
+    	GpioDataRegs.GPBTOGGLE.bit.GPIO41 = 1;              //拉高 
+    	PieCtrlRegs.PIEACK.all = PIEACK_GROUP7;	
   // To receive more interrupts from this PIE group, acknowledge this interrupt 
   // PieCtrlRegs.PIEACK.all = PIEACK_GROUP7;
 
 	// Restore registers saved:
-	DINT;
-	PieCtrlRegs.PIEIER6.all = TempPIEIER;
+		DINT;
+		PieCtrlRegs.PIEIER6.all = TempPIEIER;
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
 //   asm ("      ESTOP0");

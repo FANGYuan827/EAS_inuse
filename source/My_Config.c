@@ -306,46 +306,5 @@ void alarm_stop(void)
 }
 
 
-/*-------------动态调整AGC的增益----------------------*/
-void AGC_Adjust(float input)     			/*@input表示CFFT的幅度值之和*/
-{
-	int AGC_GAIN = 0;
-	if(input<0.0)
-	{
-		return;
-	}
-
-	if(input<=10)             		 //阈值1 
-	{
-		AGC_GAIN = MAX_GAIN;
-		mcbspa_AGC(AGC_GAIN);
-		goto lable;
-	}
-
-	if(input<=20)               	 //阈值2
-	{
-		AGC_GAIN = START_GAIN+5;
-		mcbspa_AGC(AGC_GAIN);
-		goto lable;
-	}
-
-	if(input<=30)            		//阈值3
-	{
-		AGC_GAIN = START_GAIN-5;
-		mcbspa_AGC(AGC_GAIN);
-		goto lable;	
-	}
-
-	if(input>30)		           //阈值4
-	{
-		AGC_GAIN = START_GAIN-10;
-		mcbspa_AGC(AGC_GAIN);	
-	}
-
-lable:
-	AGC_GAIN = 0;
-
-}
-
 
 

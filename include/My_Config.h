@@ -27,9 +27,6 @@ void led8(void);
 void led9(void);
 void led10(void);
 void alarm_stop(void);
-
-//AGC动态调整
-void AGC_Adjust(float input);      //输入参数是CFFT的幅度值之和
 #endif
 
 
